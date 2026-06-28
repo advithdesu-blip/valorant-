@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>will u play valorant with me</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0F1923;
+    --bg2:#1B2530;
+    --ink:#ECE8E1;
+    --red:#FF4655;
+    --green:#5AD46D;
+    --muted:#7C8A9B;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{
+    height:100%;
+    background:radial-gradient(circle at 50% 20%, var(--bg2), var(--bg) 70%);
+    color:var(--ink);
+    font-family:'Rubik', sans-serif;
+    overflow:hidden;
+  }
+  body{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    padding:24px;
+    position:relative;
+  }
+  .tag{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    letter-spacing:0.1em;
+    color:var(--red);
+    text-transform:uppercase;
+    margin-bottom:18px;
+  }
+  .crosshair{
+    width:64px;
+    height:64px;
+    margin-bottom:8px;
+    filter:drop-shadow(0 0 14px rgba(255,70,85,0.45));
+    animation:pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ transform:scale(1); opacity:1; }
+    50%{ transform:scale(1.08); opacity:0.85; }
+  }
+  h1{
+    font-size:clamp(28px, 6vw, 48px);
+    font-weight:900;
+    line-height:1.15;
+    max-width:14ch;
+    text-shadow:0 0 30px rgba(255,70,85,0.25);
+  }
+  .sub{
+    margin-top:14px;
+    color:var(--muted);
+    font-size:15px;
+  }
+  .btn-row{
+    position:relative;
+    margin-top:48px;
+    display:flex;
+    gap:24px;
+    align-items:center;
+    height:70px;
+  }
+  button{
+    font-family:'Rubik', sans-serif;
+    font-weight:700;
+    font-size:18px;
+    padding:16px 36px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    transition:transform .15s ease;
+  }
+  button:active{transform:scale(0.96);}
+  #yes{
+    background:var(--green);
+    color:#0F1923;
+    box-shadow:0 0 24px rgba(90,212,109,0.35);
+  }
+  #yes:hover{transform:scale(1.05);}
+  #no{
+    background:transparent;
+    color:var(--red);
+    border:2px solid var(--red);
+    position:fixed;
+    z-index:5;
+  }
+  #counter{
+    margin-top:28px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    color:var(--muted);
+    min-height:18px;
+  }
+  #win{
+    display:none;
+    font-size:clamp(24px, 5vw, 42px);
+    font-weight:900;
+    color:var(--green);
+    margin-top:0;
+  }
+  .confetti{
+    position:fixed; top:-10px;
+    width:8px; height:8px;
+    opacity:0.9;
+    border-radius:1px;
+    pointer-events:none;
+  }
+  @keyframes fall{
+    to{ transform:translateY(110vh) rotate(360deg); opacity:0; }
+  }
+</style>
+</head>
+<body>
+
+<svg class="crosshair" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="32" cy="32" r="3" fill="#FF4655"/>
+  <line x1="32" y1="4" x2="32" y2="20" stroke="#FF4655" stroke-width="3"/>
+  <line x1="32" y1="44" x2="32" y2="60" stroke="#FF4655" stroke-width="3"/>
+  <line x1="4" y1="32" x2="20" y2="32" stroke="#FF4655" stroke-width="3"/>
+  <line x1="44" y1="32" x2="60" y2="32" stroke="#FF4655" stroke-width="3"/>
+</svg>
+<div class="tag">// agent select</div>
+<h1 id="question">will u play valorant with me</h1>
+<p class="sub">choose wisely. one of these buttons is not loyal.</p>
+
+<div class="btn-row">
+  <button id="yes">yes</button>
+  <button id="no">no</button>
+</div>
+
+<div id="counter">attempts to say no: 0</div>
+<div id="win"></div>
+
+<script>
+  const noBtn = document.getElementById('no');
+  const yesBtn = document.getElementById('yes');
+  const counterEl = document.getElementById('counter');
+  const winEl = document.getElementById('win');
+  const question = document.getElementById('question');
+  const sub = document.querySelector('.sub');
+  const btnRow = document.querySelector('.btn-row');
+
+  let dodges = 0;
+  const taunts = [
+    "nice try",
+    "not today",
+    "nah",
+    "absolutely not",
+    "lock in",
+    "instalock yes instead",
+    "this button mains dodge",
+    "anti-aim activated",
+    "no whiffed",
+    "clutch... denied"
+  ];
+
+  function placeNoRandomly(){
+    const margin = 16;
+    const btnW = noBtn.offsetWidth || 110;
+    const btnH = noBtn.offsetHeight || 56;
+    const maxX = window.innerWidth - btnW - margin;
+    const maxY = window.innerHeight - btnH - margin;
+    const x = Math.max(margin, Math.random() * maxX);
+    const y = Math.max(margin, Math.random() * maxY);
+    noBtn.style.left = x + 'px';
+    noBtn.style.top = y + 'px';
+  }
+
+  function dodge(){
+    dodges++;
+    counterEl.textContent = "attempts to say no: " + dodges;
+    noBtn.textContent = taunts[Math.min(dodges - 1, taunts.length - 1)];
+    placeNoRandomly();
+  }
+
+  // initial placement (relative, near yes, until first dodge)
+  noBtn.style.position = 'relative';
+  noBtn.style.left = 'auto';
+  noBtn.style.top = 'auto';
+
+  function activateRoamMode(){
+    const rect = noBtn.getBoundingClientRect();
+    noBtn.style.position = 'fixed';
+    noBtn.style.left = rect.left + 'px';
+    noBtn.style.top = rect.top + 'px';
+  }
+
+  noBtn.addEventListener('mouseenter', () => {
+    if (dodges === 0) activateRoamMode();
+    dodge();
+  });
+  noBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    if (dodges === 0) activateRoamMode();
+    dodge();
+  }, {passive:false});
+  noBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (dodges === 0) activateRoamMode();
+    dodge();
+  });
+
+  function launchConfetti(){
+    const colors = ['#FF4655','#5AD46D','#ECE8E1','#7C8A9B'];
+    for(let i=0;i<60;i++){
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random()*100 + 'vw';
+      c.style.background = colors[Math.floor(Math.random()*colors.length)];
+      c.style.animation = `fall ${2 + Math.random()*1.5}s linear forwards`;
+      c.style.animationDelay = (Math.random()*0.5) + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 4000);
+    }
+  }
+
+  yesBtn.addEventListener('click', () => {
+    question.style.display = 'none';
+    sub.style.display = 'none';
+    btnRow.style.display = 'none';
+    counterEl.style.display = 'none';
+    winEl.style.display = 'block';
+    winEl.textContent = dodges === 0
+      ? "lesgo 🔥 que up"
+      : `took ${dodges} dodge${dodges > 1 ? 's' : ''} but we're locked in 🔥`;
+    launchConfetti();
+  });
+
+  window.addEventListener('resize', () => {
+    if (dodges > 0) placeNoRandomly();
+  });
+</script>
+
+</body>
+</html>
